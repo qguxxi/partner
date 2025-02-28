@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Partner</string>
+    <string name="google">Đăng nhập với google</string>
+    <string name="facebook">Đăng nhập với facebook</string>
+    <string name="term">Sử dụng ứng dụng, bạn chấp nhận điều khoản dịch vụ</string>
+    <string name="term_main">Điều khoản dịch vụ</string>
+    <string name="policy">và xác nhận rằng bạn đã đọc chính sách bảo mật</string>
+    <string name="policy_main">Chính sách bảo mật</string>
 </resources>
