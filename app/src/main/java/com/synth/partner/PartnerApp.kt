@@ -6,5 +6,5 @@ import com.synth.partner.navigation.AppNavGraph
 
 @Composable
 fun PartnerApp() {
-    AppNavGraph(navController = rememberNavController())
+    AppNavGraph()
 }

@@ -1,12 +1,13 @@
+@file:Suppress("DEPRECATION")
+
 package com.synth.partner.di
 
 
-import android.app.Application
 import android.content.Context
-import com.synth.partner.data.repository.PartnerAuthRepositoryImpl
-import com.synth.partner.domain.repository.PartnerAuthRepository
-import com.synth.partner.domain.usecase.SignInWithGoogleUseCase
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.firebase.auth.FirebaseAuth
+import com.synth.partner.BuildConfig
+import com.synth.partner.R
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,32 +15,24 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+// di/AuthModule.kt
 @Module
 @InstallIn(SingletonComponent::class)
-object PartnerAppModule {
-    @Provides
-    @Singleton
-    fun provideApplication(@ApplicationContext context: Context): Application {
-        return context as Application
-    }
-
-
-
+object AuthModule {
     @Provides
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides
     @Singleton
-    fun provideAuthRepository(firebaseAuth: FirebaseAuth): PartnerAuthRepository {
-        return PartnerAuthRepositoryImpl(firebaseAuth)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSignInWithGoogleUseCase(@ApplicationContext context: Context,repository: PartnerAuthRepository): SignInWithGoogleUseCase {
-        return SignInWithGoogleUseCase(context,repository)
-    }
-
-    // Thêm các provide khác nếu cần (Location, Pairing...)
+    fun provideSignInClient(): BeginSignInRequest =
+        BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    .setServerClientId(BuildConfig.WEB_CLIENT_ID) // Lấy từ google-services.json
+                    .setFilterByAuthorizedAccounts(false)
+                    .build()
+            )
+            .build()
 }

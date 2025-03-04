@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -7,6 +10,13 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
+// Đọc tệp local.properties
+val localPropertiesFile = rootProject.file("local.properties")
+val localProperties = Properties()
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
 android {
     namespace = "com.synth.partner"
     compileSdk = 35
@@ -14,7 +24,7 @@ android {
     defaultConfig {
         applicationId = "com.synth.partner"
         minSdk = 31
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -27,18 +37,13 @@ android {
 
 
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            buildConfigField("String", "WEB_CLIENT_ID", "\"${localProperties["WEB_CLIENT_ID"]}\"")
         }
-        debug {
-            buildConfigField("String", "webClientId", "\"${project.findProperty("webClientId")}\"")
-        }
-        release {
-            buildConfigField("String", "webClientId", "\"${project.findProperty("webClientId")}\"")
+        getByName("debug") {
+            buildConfigField("String", "WEB_CLIENT_ID", "\"${localProperties["WEB_CLIENT_ID"]}\"")
         }
     }
     compileOptions {
@@ -70,6 +75,7 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.navigation.runtime.android)
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.androidx.runtime.livedata)
     // When using Kotlin.
     kapt(libs.androidx.hilt.compiler)
 
