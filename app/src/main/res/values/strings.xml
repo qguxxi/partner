@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Partner Hub</string>
+    <string name="google">Đăng nhập với google</string>
+    <string name="facebook">Đăng nhập với facebook</string>
+    <string name="term">Sử dụng ứng dụng, bạn chấp nhận điều khoản dịch vụ</string>
+    <string name="term_main">Điều khoản dịch vụ</string>
+    <string name="policy">và xác nhận rằng bạn đã đọc chính sách bảo mật</string>
+    <string name="policy_main">Chính sách bảo mật</string>
+    <string name="error">Vui lòng đăng nhập vào ứng dụng</string>
+    <string name="hello">Xin chào</string>
+    <string name="welcome">Chào mừng bạn đến với Partner</string>
+    <string name="continue_button">Tiếp tục</string>
+</resources>
