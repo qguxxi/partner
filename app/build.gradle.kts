@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -48,13 +50,27 @@ android {
 }
 
 dependencies {
+//    Hilt - Android Dependency Injection
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    // Hilt tích hợp với Jetpack Compose
+    implementation (libs.androidx.hilt.navigation.compose)
+
+//    Permission
+    implementation(libs.accompanist.permissions)
+
+
 //    One tap sign in with Google
     implementation(libs.onetapcompose)
 
 //    Navigation
     implementation(libs.androidx.navigation.compose)
 
+    //  Splash Screen
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core.splashscreen)
 
+    implementation (libs.androidx.activity)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -71,4 +87,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

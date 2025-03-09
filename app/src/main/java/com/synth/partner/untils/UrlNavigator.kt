@@ -10,7 +10,7 @@ object UrlNavigator {
         // navigate to url
         try {
             val intent = Intent(Intent.ACTION_VIEW,Uri.parse(url))
-            context.startService(intent)
+            context.startActivity(intent)
         } catch (e : Exception) {
             e.printStackTrace()
             Log.d("URL", "Error: $e")

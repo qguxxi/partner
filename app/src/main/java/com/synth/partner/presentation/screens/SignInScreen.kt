@@ -33,6 +33,7 @@ import com.stevdzasan.onetap.rememberOneTapSignInState
 import com.synth.partner.R
 import com.synth.partner.presentation.components.GoogleButton
 import com.synth.partner.presentation.components.PrivacyAndTerm
+import com.synth.partner.presentation.theme.logoFont
 import com.synth.partner.untils.UrlNavigator
 
 @Composable
@@ -63,7 +64,6 @@ fun SignInScreen(
             verticalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
                 .navigationBarsPadding()
         ) {
             Spacer(Modifier.weight(1f))
@@ -92,7 +92,7 @@ fun LogoSection() {
         )
         Text(
             text = stringResource(id = R.string.app_name) ,
-            style = MaterialTheme.typography.displaySmall,
+            style = logoFont,
         )
     }
 }
