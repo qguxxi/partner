@@ -11,4 +11,6 @@
     <string name="hello">Xin chào</string>
     <string name="welcome">Chào mừng bạn đến với Partner</string>
     <string name="continue_button">Tiếp tục</string>
+    <string name="allow_location_label">Cho phép truy cập vào vị trí của bạn</string>
+    <string name="allow_location">Ứng dụng truy cập vị trí của bạn để cung cấp dịch vụ \n chính xác hơn</string>
 </resources>

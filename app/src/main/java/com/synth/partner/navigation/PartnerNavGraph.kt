@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.synth.partner.presentation.screens.HomeScreen
+import com.synth.partner.presentation.screens.LocalePermissionScreen
 import com.synth.partner.presentation.screens.SignInScreen
 import com.synth.partner.presentation.screens.WelcomeScreen
 
@@ -17,7 +18,10 @@ fun PartnerNavGraph(navController : NavHostController) {
         }
 
         composable(Screen.Welcome.route) {
-            WelcomeScreen({})
+            WelcomeScreen { navController.navigate(Screen.Locale.route) }
+        }
+        composable(Screen.Locale.route) {
+            LocalePermissionScreen()
         }
 
         composable(Screen.Home.route) {
