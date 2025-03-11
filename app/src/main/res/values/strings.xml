@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Partner Hub</string>
+    <string name="app_name">Partner</string>
     <string name="google">Đăng nhập với google</string>
     <string name="facebook">Đăng nhập với facebook</string>
     <string name="term">Sử dụng ứng dụng, bạn chấp nhận điều khoản dịch vụ</string>

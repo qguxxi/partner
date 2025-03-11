@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -35,7 +34,7 @@ import com.synth.partner.presentation.components.LocaleSection
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LocalePermissionScreen() {
+fun LocalePermissionScreen(onPermissionGranted: () -> Unit = {}) {
     val permissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     val context = LocalContext.current
     val hasPermission = permissionState.status.isGranted
@@ -102,8 +101,8 @@ fun LocalePermissionScreen() {
             LocaleSection()
 
             ContinueButton(
-                onClick = { requestPermission.value.invoke() },
-                text = "Cấp quyền chia sẻ vị trí",
+                onClick = { if(!hasPermission) requestPermission.value.invoke() else onPermissionGranted()  },
+                text = if (!hasPermission)"Cấp quyền chia sẻ vị trí" else "Tiếp tục",
                 modifier = Modifier.padding(bottom = 36.dp)
             )
         }

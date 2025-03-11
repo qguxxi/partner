@@ -50,6 +50,11 @@ android {
 }
 
 dependencies {
+
+//    Data store
+    implementation(libs.androidx.datastore.preferences)
+
+
 //    Hilt - Android Dependency Injection
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
