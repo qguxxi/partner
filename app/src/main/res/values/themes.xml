@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Theme dành cho Splash Screen -->
+    <style name="Theme.App.Splash" parent="Theme.SplashScreen">
+        <!-- Màu nền của Splash Screen -->
+        <item name="windowSplashScreenBackground">@color/white</item>
 
-    <style name="Theme.Partner" parent="android:Theme.Material.Light.NoActionBar" />
+        <!-- Logo hoặc icon hiển thị trên Splash Screen -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+
+        <!-- Thời gian chạy hoạt ảnh logo (300ms) -->
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+
+        <!-- Theme được sử dụng sau Splash Screen -->
+        <item name="postSplashScreenTheme">@style/Theme.App.NoActionBar</item>
+    </style>
+
+    <!-- Theme không có ActionBar -->
+    <style name="Theme.App.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme if needed -->
+    </style>
 </resources>

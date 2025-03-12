@@ -27,16 +27,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.synth.partner.BuildConfig
 import com.stevdzasan.onetap.OneTapSignInWithGoogle
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import com.synth.partner.R
 import com.synth.partner.presentation.components.GoogleButton
 import com.synth.partner.presentation.components.PrivacyAndTerm
+import com.synth.partner.presentation.theme.logoFont
+import com.synth.partner.presentation.viewmodel.AuthViewModel
 import com.synth.partner.untils.UrlNavigator
 
 @Composable
 fun SignInScreen(
+    viewModel: AuthViewModel = hiltViewModel(),
     onLoginSuccess:() -> Unit
 ) {
     val context = LocalContext.current
@@ -45,6 +49,7 @@ fun SignInScreen(
         state = state,
         clientId = BuildConfig.WEB_CLIENT_ID,
         onTokenIdReceived = { tokenId ->
+            viewModel.saveLoginState(true, tokenId)
             onLoginSuccess()
             Log.d("LOG", tokenId)
         },
@@ -63,7 +68,6 @@ fun SignInScreen(
             verticalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
                 .navigationBarsPadding()
         ) {
             Spacer(Modifier.weight(1f))
@@ -92,7 +96,7 @@ fun LogoSection() {
         )
         Text(
             text = stringResource(id = R.string.app_name) ,
-            style = MaterialTheme.typography.displaySmall,
+            style = logoFont,
         )
     }
 }
