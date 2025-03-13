@@ -7,5 +7,7 @@ import javax.inject.Inject
 class CheckLoginStateUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    operator fun invoke(): Boolean = authRepository.isLoggedIn()
+    operator fun invoke(): Boolean {
+        return authRepository.isLoggedIn()
+    }
 }

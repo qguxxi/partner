@@ -1,21 +1,26 @@
 package com.synth.partner.presentation.screens
 
+import android.Manifest
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -32,29 +37,59 @@ import com.synth.partner.presentation.components.ContinueButton
 import com.synth.partner.presentation.components.LocaleSection
 
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LocalePermissionScreen(onPermissionGranted: () -> Unit = {}) {
-    val permissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+fun LocalePermissionScreen(
+    onPermissionGranted: () -> Unit = {}
+) {
+    // Trạng thái quyền truy cập vị trí foreground và background
+    val fineLocationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
+    val backgroundLocationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
     val context = LocalContext.current
-    val hasPermission = permissionState.status.isGranted
-    val requestPermission = rememberUpdatedState {
+
+    // Kiểm tra trạng thái quyền
+    val hasFineLocationPermission = fineLocationPermissionState.status.isGranted
+    val hasBackgroundLocationPermission = backgroundLocationPermissionState.status.isGranted
+
+    // Hàm xử lý yêu cầu quyền
+    val requestPermissions = {
         when {
-            hasPermission -> {
+            // Nếu chưa có quyền foreground, yêu cầu trước
+            !hasFineLocationPermission -> {
+                if (fineLocationPermissionState.status.shouldShowRationale) {
+                    Toast.makeText(
+                        context,
+                        "Ứng dụng cần quyền truy cập vị trí để hoạt động.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                fineLocationPermissionState.launchPermissionRequest()
+            }
+            // Nếu đã có quyền foreground nhưng chưa có quyền background, yêu cầu quyền background
+            hasFineLocationPermission && !hasBackgroundLocationPermission -> {
+                if (backgroundLocationPermissionState.status.shouldShowRationale) {
+                    Toast.makeText(
+                        context,
+                        "Ứng dụng cần quyền truy cập vị trí khi chạy nền.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                backgroundLocationPermissionState.launchPermissionRequest()
+            }
+            // Nếu cả hai quyền đã được cấp, gọi callback
+            hasFineLocationPermission && hasBackgroundLocationPermission -> {
                 Toast.makeText(context, "Quyền đã được cấp!", Toast.LENGTH_SHORT).show()
-            }
-            permissionState.status.shouldShowRationale -> {
-                Toast.makeText(context, "Ứng dụng cần quyền truy cập vị trí để hoạt động.", Toast.LENGTH_LONG).show()
-                permissionState.launchPermissionRequest()
-            }
-            else -> {
-                permissionState.launchPermissionRequest()
+                onPermissionGranted()
             }
         }
     }
 
     Surface(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.error)
+            .windowInsetsPadding(WindowInsets(0, 0, 0, 0))
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
@@ -63,6 +98,7 @@ fun LocalePermissionScreen(onPermissionGranted: () -> Unit = {}) {
                 .fillMaxSize()
                 .navigationBarsPadding()
         ) {
+            // Phần hình ảnh phía trên
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -98,17 +134,31 @@ fun LocalePermissionScreen(onPermissionGranted: () -> Unit = {}) {
                 }
             }
 
+            // Phần LocaleSection (giả định đã được định nghĩa)
             LocaleSection()
 
+            // Nút tiếp tục
             ContinueButton(
-                onClick = { if(!hasPermission) requestPermission.value.invoke() else onPermissionGranted()  },
-                text = if (!hasPermission)"Cấp quyền chia sẻ vị trí" else "Tiếp tục",
+                onClick = { requestPermissions() },
+                text = when {
+                    !hasFineLocationPermission -> "Cấp quyền truy cập vị trí"
+                    !hasBackgroundLocationPermission -> "Cấp quyền chạy nền"
+                    else -> "Tiếp tục"
+                },
                 modifier = Modifier.padding(bottom = 36.dp)
             )
         }
     }
+
+    // Hiệu ứng phụ để kiểm tra khi quyền thay đổi
+    LaunchedEffect(fineLocationPermissionState.status, backgroundLocationPermissionState.status) {
+        if (hasFineLocationPermission && hasBackgroundLocationPermission) {
+            onPermissionGranted()
+        }
+    }
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Preview
 @Composable
 private fun LocalePermissionScreenPreview() {

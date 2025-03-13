@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(
+open class AuthViewModel @Inject constructor(
     private val checkLoginStateUseCase: CheckLoginStateUseCase,
     private val saveLoginStateUseCase: SaveLoginStateUseCase
 ) : ViewModel() {
