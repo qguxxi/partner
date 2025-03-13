@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -25,23 +24,27 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.synth.partner.BuildConfig
 import com.stevdzasan.onetap.OneTapSignInWithGoogle
+import com.stevdzasan.onetap.getUserFromTokenId
 import com.stevdzasan.onetap.rememberOneTapSignInState
+import com.synth.partner.BuildConfig
 import com.synth.partner.R
 import com.synth.partner.presentation.components.GoogleButton
 import com.synth.partner.presentation.components.PrivacyAndTerm
 import com.synth.partner.presentation.theme.logoFont
 import com.synth.partner.presentation.viewmodel.AuthViewModel
+import com.synth.partner.presentation.viewmodel.GoogleUserViewModel
 import com.synth.partner.untils.UrlNavigator
 
 @Composable
 fun SignInScreen(
-    viewModel: AuthViewModel = hiltViewModel(),
-    onLoginSuccess:() -> Unit
+    onLoginSuccess:() -> Unit,
+    authViewModel: AuthViewModel = hiltViewModel(),
+    googleUserViewModel: GoogleUserViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val state = rememberOneTapSignInState()
@@ -49,9 +52,13 @@ fun SignInScreen(
         state = state,
         clientId = BuildConfig.WEB_CLIENT_ID,
         onTokenIdReceived = { tokenId ->
-            viewModel.saveLoginState(true, tokenId)
+            authViewModel.saveLoginState(true, tokenId)
+            getUserFromTokenId(tokenId)
             onLoginSuccess()
-            Log.d("LOG", tokenId)
+            Log.d("LOG", "Token id client : $tokenId")
+            Log.d("GoogleUser", getUserFromTokenId(tokenId).toString())
+            googleUserViewModel.saveGoogleUser(getUserFromTokenId(tokenId))
+
         },
         onDialogDismissed = { message ->
             Toast.makeText(context, context.getString(R.string.error), Toast.LENGTH_SHORT).show()
@@ -119,8 +126,10 @@ fun ButtonsSection(onGoogleClick : () -> Unit ,isLoading: Boolean, context : Con
     }
 }
 
-@Preview
+@Preview(showBackground = true, device = Devices.PIXEL_4A)
 @Composable
 private fun SignInScreenPreview() {
-    SignInScreen {}
+    SignInScreen(
+        onLoginSuccess = {}
+    )
 }
